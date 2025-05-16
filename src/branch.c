@@ -40,7 +40,7 @@ int	mygit_branch(const char *name)
 	hash[strcspn(hash, "\n")] = 0;
 	fclose(cur_branch_file);
 
-	if (snprintf(new_path, sizeof(new_path), ".mygit/refs/heads/%s", name) >= sizeof(new_path))
+	if (snprintf(new_path, sizeof(new_path), ".mygit/refs/heads/%s", name) >= (int)sizeof(new_path))
 	{
 		fprintf(stderr, "Branch name too long\n");
 		return (1);

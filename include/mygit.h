@@ -13,5 +13,6 @@ int mygit_init(void);
 int mygit_log(void);
 int	mygit_commit(const char *message);
 int	mygit_branch(const char *name);
+int	mygit_checkout(const char *branch);
 
 #endif

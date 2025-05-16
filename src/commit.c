@@ -21,7 +21,6 @@ int mygit_commit(const char *message)
     FILE *head;
     FILE *out;
     char head_content[256];
-    char branch_path[256];
     char path[256];
 
     srand(time(NULL));

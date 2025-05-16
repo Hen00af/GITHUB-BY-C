@@ -22,7 +22,6 @@ int main(int ac,char **av)
         }
         return(mygit_commit(av[2]));
     }
-    
     else if (strcmp(av[1], "branch") == 0)
     {
 	if (ac < 3)
@@ -30,6 +29,15 @@ int main(int ac,char **av)
 		fprintf(stderr, "Usage: mygit branch <name>\n");
 		return (1);
 	}
+    else if (strcmp(av[1], "checkout") == 0)
+    {
+        if (ac < 3)
+        {
+            fprintf(stderr, "Usage: mygit checkout <branch>\n");
+            return (1);
+        }
+        return (mygit_checkout(av[2]));
+    }
 	return (mygit_branch(av[2]));
 }
 
