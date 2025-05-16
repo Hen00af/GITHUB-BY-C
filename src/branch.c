@@ -7,11 +7,11 @@
 
 int	mygit_branch(const char *name)
 {
-	FILE	*head, *cur_branch_file, *new_branch_file;
-	char	head_ref[256];
-	char	cur_branch[256];
-	char	hash[41];
-	char	new_path[256];
+	FILE *head, *cur_branch_file, *new_branch_file;
+	char head_ref[256];
+	char cur_branch[256];
+	char hash[41];
+	char new_path[256];
 
 	head = fopen(".mygit/HEAD", "r");
 	if (!head)
@@ -22,11 +22,13 @@ int	mygit_branch(const char *name)
 	fgets(head_ref, sizeof(head_ref), head);
 	head_ref[strcspn(head_ref, "\n")] = 0;
 	fclose(head);
+
 	if (strncmp(head_ref, "ref: ", 5) != 0)
 	{
-		fprintf(stderr, "Invalid HEAD format\n");
+		fprintf(stderr, "Invalid HEAD format (expected 'ref: ...')\n");
 		return (1);
 	}
+
 	strcpy(cur_branch, head_ref + 5);
 	cur_branch_file = fopen(cur_branch, "r");
 	if (!cur_branch_file)
@@ -37,7 +39,20 @@ int	mygit_branch(const char *name)
 	fgets(hash, sizeof(hash), cur_branch_file);
 	hash[strcspn(hash, "\n")] = 0;
 	fclose(cur_branch_file);
-	snprintf(new_path, sizeof(new_path), ".mygit/refs/heads/%s", name);
+
+	if (snprintf(new_path, sizeof(new_path), ".mygit/refs/heads/%s", name) >= sizeof(new_path))
+	{
+		fprintf(stderr, "Branch name too long\n");
+		return (1);
+	}
+
+	struct stat st;
+	if (stat(new_path, &st) == 0)
+	{
+		fprintf(stderr, "Branch '%s' already exists\n", name);
+		return (1);
+	}
+
 	new_branch_file = fopen(new_path, "w");
 	if (!new_branch_file)
 	{
@@ -47,6 +62,5 @@ int	mygit_branch(const char *name)
 	fprintf(new_branch_file, "%s\n", hash);
 	fclose(new_branch_file);
 	printf("Branch '%s' created at %s\n", name, hash);
-	
-    return (0);
+	return (0);
 }
